@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Name Display</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Background Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #c0c4cb, #677389);
+            color: white;
+            overflow: hidden;
+            padding: 0 5%;
+        }
+
+        /* Glassmorphism Form Container */
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 35px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            width: 40%;
+            max-width: 450px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        h2 {
+            font-weight: 600;
+            font-size: 26px;
+            margin-bottom: 20px;
+            color: #f1f1f1;
+        }
+
+        /* Input Field Styling */
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input:focus {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.03);
+        }
+
+        /* Stylish Button */
+        button {
+            padding: 15px 25px;
+            font-size: 16px;
+            background: #ff758c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(255, 118, 136, 0.8);
+        }
+
+        button:hover {
+            background: #ff3f6c;
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(255, 118, 136, 1);
+        }
+
+        /* Names Display Section */
+        .names-container {
+            width: 50%;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.5s ease-in-out;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .names-container h3 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #f1f1f1;
+        }
+
+        .name {
+            font-size: 18px;
+            margin-bottom: 10px;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: all 0.5s ease;
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .name.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Fade-In Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .container, .names-container {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Enter Names (Separated by Comma)</h2>
+    <input type="text" id="nameInput" placeholder="e.g., Alice, Bob, Charlie">
+    <button onclick="displayNames()">Submit</button>
+</div>
+
+<div class="names-container" id="output">
+    <h3>Names List</h3>
+</div>
+
+<script>
+    function displayNames() {
+        const input = document.getElementById("nameInput").value.trim();
+        const outputDiv = document.getElementById("output");
+
+        // Clear previous output
+        outputDiv.innerHTML = '<h3>Names List</h3>';
+
+        if (!input) {
+            const noNameMsg = document.createElement("p");
+            noNameMsg.textContent = "Please enter some names!";
+            noNameMsg.style.color = "#ff3f6c";
+            noNameMsg.style.fontWeight = "bold";
+            outputDiv.appendChild(noNameMsg);
+            return;
+        }
+
+        const namesArray = input.split(",").map(name => name.trim()).filter(name => name);
+
+        if (namesArray.length === 0) {
+            outputDiv.innerHTML = '<h3>Names List</h3><p>No valid names found!</p>';
+            return;
+        }
+
+        const formattedNames = namesArray.map(name => 
+            name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
+        );
+
+        let index = 0;
+        const interval = setInterval(() => {
+            if (index < formattedNames.length) {
+                const nameDiv = document.createElement("div");
+                nameDiv.classList.add("name");
+                nameDiv.textContent = formattedNames[index];
+
+                outputDiv.appendChild(nameDiv);
+
+                // Adding fade-in effect with delay
+                setTimeout(() => {
+                    nameDiv.classList.add("show");
+                }, 100);
+
+                index++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 400);
+    }
+</script>
+
+</body>
+</html>
